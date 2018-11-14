@@ -13,6 +13,16 @@ class Form extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  componentDidMount() {
+    if (this.props.post) {
+      this.setState({
+        title: this.props.post.title,
+        desc: this.props.post.desc,
+        body: this.props.post.body
+      });
+    }
+  }
+
   handleChange(evt) {
     this.setState({
       [evt.target.name]: evt.target.value
