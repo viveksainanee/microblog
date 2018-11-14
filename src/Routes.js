@@ -17,12 +17,19 @@ class Routes extends Component {
           exact
           path="/new"
           render={props => (
-            <Form {...props} newBlogPost={this.props.newBlogPost} />
+            <Form {...props} updateBlogPost={this.props.updateBlogPost} />
           )}
         />
         <Route
           path="/:postid"
-          render={props => <Post {...props} posts={this.props.posts} />}
+          render={props => (
+            <Post
+              {...props}
+              posts={this.props.posts}
+              updateBlogPost={this.props.updateBlogPost}
+              deleteBlogPost={this.props.deleteBlogPost}
+            />
+          )}
         />
       </Switch>
     );

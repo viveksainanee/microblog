@@ -8,20 +8,36 @@ class Microblog extends Component {
     this.state = {
       posts: []
     };
-    this.newBlogPost = this.newBlogPost.bind(this);
+    this.updateBlogPost = this.updateBlogPost.bind(this);
+    this.deleteBlogPost = this.deleteBlogPost.bind(this);
   }
 
-  newBlogPost(post) {
+  updateBlogPost(post) {
     this.setState(st => {
       return { posts: [...st.posts, post] };
     });
+  }
+
+  deleteBlogPost(title) {
+    let idx = this.state.posts.findIndex(post => post.title === title);
+
+    this.setState(st => ({
+      posts: [
+        ...st.posts.slice(0, idx),
+        ...st.posts.slice(idx + 1, st.posts.length)
+      ]
+    }));
   }
 
   render() {
     return (
       <div className="Microblog">
         <Header />
-        <Routes posts={this.state.posts} newBlogPost={this.newBlogPost} />
+        <Routes
+          posts={this.state.posts}
+          updateBlogPost={this.updateBlogPost}
+          deleteBlogPost={this.deleteBlogPost}
+        />
       </div>
     );
   }

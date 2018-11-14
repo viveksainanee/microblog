@@ -7,7 +7,8 @@ class Form extends Component {
     this.state = {
       title: '',
       desc: '',
-      body: ''
+      body: '',
+      comments: []
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -31,7 +32,7 @@ class Form extends Component {
 
   handleSubmit(evt) {
     evt.preventDefault();
-    this.props.newBlogPost(this.state);
+    this.props.updateBlogPost(this.state);
     this.props.history.push('/');
   }
 
