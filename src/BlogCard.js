@@ -5,7 +5,7 @@ class BlogCard extends Component {
   render() {
     return (
       <div className="BlogCard">
-        <NavLink to={`/${this.props.title}`}>
+        <NavLink to={`/${this.props.id}`}>
           <h3>{this.props.title}</h3>
         </NavLink>
         <p>{this.props.body}</p>

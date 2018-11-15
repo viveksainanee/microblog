@@ -17,7 +17,11 @@ class Routes extends Component {
           exact
           path="/new"
           render={props => (
-            <Form {...props} updateBlogPost={this.props.updateBlogPost} />
+            <Form
+              {...props}
+              addBlogPost={this.props.addBlogPost}
+              updateBlogPost={this.props.updateBlogPost}
+            />
           )}
         />
         <Route
@@ -31,6 +35,7 @@ class Routes extends Component {
             />
           )}
         />
+        {/* TODO; Add in a 404 page */}
       </Switch>
     );
   }

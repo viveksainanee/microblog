@@ -13,6 +13,7 @@ class Post extends Component {
     this.handleDelete = this.handleDelete.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.addComment = this.addComment.bind(this);
+    this.deleteComment = this.deleteComment.bind(this);
     this.findPost = this.findPost.bind(this);
   }
 
@@ -20,9 +21,9 @@ class Post extends Component {
     this.setState({ edit: true });
   }
 
-  handleDelete(title) {
-    // call function to delete in the master list in microblog with the title
-    this.props.deleteBlogPost(title);
+  handleDelete(id) {
+    // call function to delete in the master list in microblog with the id
+    this.props.deleteBlogPost(id);
     this.props.history.replace('/');
   }
 
@@ -34,7 +35,7 @@ class Post extends Component {
 
   findPost() {
     return this.props.posts.filter(
-      p => p.title === this.props.match.params.postid
+      p => p.id === this.props.match.params.postid
     )[0];
   }
 
@@ -49,6 +50,16 @@ class Post extends Component {
     this.setState({ comment: '' });
   }
 
+  deleteComment(idx) {
+    let post = this.findPost();
+    post.comments = [
+      ...post.comments.slice(0, idx),
+      ...post.comments.slice(idx + 1, post.comments.length)
+    ];
+
+    this.props.updateBlogPost(post);
+  }
+
   render() {
     let post = this.findPost();
 
@@ -58,7 +69,7 @@ class Post extends Component {
         <h2>{post.desc}</h2>
         <p>{post.body}</p>
         <button onClick={this.handleEdit}>Edit</button>
-        <button onClick={() => this.handleDelete(post.title)}>Delete</button>
+        <button onClick={() => this.handleDelete(post.id)}>Delete</button>
         <div className="Post-commments">
           <h3> Comments</h3>
 
@@ -70,14 +81,26 @@ class Post extends Component {
             />
             <button> Submit </button>
           </form>
-          {post.comments.map(comment => (
-            <Comment comment={comment} />
+          {post.comments.map((comment, idx) => (
+            <Comment
+              key={post.id}
+              comment={comment}
+              deleteComment={() => this.deleteComment(idx)}
+            />
           ))}
         </div>
       </div>
     );
 
-    return this.state.edit ? <Form post={post} /> : showPost;
+    return this.state.edit ? (
+      <Form
+        post={post}
+        history={this.props.history}
+        updateBlogPost={this.props.updateBlogPost}
+      />
+    ) : (
+      showPost
+    );
   }
 }
 

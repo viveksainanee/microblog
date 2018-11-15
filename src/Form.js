@@ -1,27 +1,30 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
+import uuid from 'uuid/v4';
 
 class Form extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      title: '',
-      desc: '',
-      body: '',
-      comments: []
-    };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  componentDidMount() {
     if (this.props.post) {
-      this.setState({
+      // In edit mode, we pass in the post and set initial state as post
+      this.state = {
         title: this.props.post.title,
         desc: this.props.post.desc,
-        body: this.props.post.body
-      });
+        body: this.props.post.body,
+        id: this.props.post.id
+      };
+    } else {
+      this.state = {
+        title: '',
+        desc: '',
+        body: '',
+        comments: [],
+        id: uuid()
+      };
     }
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleChange(evt) {
@@ -30,9 +33,13 @@ class Form extends Component {
     });
   }
 
-  handleSubmit(evt) {
+  async handleSubmit(evt) {
     evt.preventDefault();
-    this.props.updateBlogPost(this.state);
+    if (this.props.post) {
+      this.props.updateBlogPost(this.state);
+    } else {
+      this.props.addBlogPost(this.state);
+    }
     this.props.history.push('/');
   }
 

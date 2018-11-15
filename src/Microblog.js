@@ -8,24 +8,29 @@ class Microblog extends Component {
     this.state = {
       posts: []
     };
+    this.addBlogPost = this.addBlogPost.bind(this);
     this.updateBlogPost = this.updateBlogPost.bind(this);
     this.deleteBlogPost = this.deleteBlogPost.bind(this);
   }
 
-  updateBlogPost(post) {
+  addBlogPost(post) {
     this.setState(st => {
       return { posts: [...st.posts, post] };
     });
   }
 
-  deleteBlogPost(title) {
-    let idx = this.state.posts.findIndex(post => post.title === title);
+  updateBlogPost(post) {
+    let oldPosts = this.state.posts.filter(oldPost => oldPost.id !== post.id);
+    this.setState(st => {
+      return { posts: [...oldPosts, post] };
+    });
+  }
+
+  deleteBlogPost(id) {
+    let idx = this.state.posts.findIndex(post => post.id === id);
 
     this.setState(st => ({
-      posts: [
-        ...st.posts.slice(0, idx),
-        ...st.posts.slice(idx + 1, st.posts.length)
-      ]
+      posts: [...st.posts.slice(0, idx), ...st.posts.slice(idx + 1)]
     }));
   }
 
@@ -36,6 +41,7 @@ class Microblog extends Component {
         <Routes
           posts={this.state.posts}
           updateBlogPost={this.updateBlogPost}
+          addBlogPost={this.addBlogPost}
           deleteBlogPost={this.deleteBlogPost}
         />
       </div>
