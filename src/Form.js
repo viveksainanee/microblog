@@ -11,7 +11,8 @@ class Form extends Component {
         title: this.props.post.title,
         desc: this.props.post.desc,
         body: this.props.post.body,
-        id: this.props.post.id
+        id: this.props.post.id,
+        comments: this.props.post.comments
       };
     } else {
       this.state = {
@@ -67,9 +68,8 @@ class Form extends Component {
           onChange={this.handleChange}
         />
         <button>Save</button>
-        <NavLink to="/">
-          <button>Cancel</button>
-        </NavLink>
+
+        <button onClick={this.props.handleEdit}>Cancel</button>
       </form>
     );
   }

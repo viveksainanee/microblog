@@ -14,11 +14,12 @@ class Post extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.addComment = this.addComment.bind(this);
     this.deleteComment = this.deleteComment.bind(this);
-    this.findPost = this.findPost.bind(this);
   }
 
+  // HANDLER FUNCTIONS /////////////////////////
+
   handleEdit() {
-    this.setState({ edit: true });
+    this.setState({ edit: !this.state.edit });
   }
 
   handleDelete(id) {
@@ -33,16 +34,10 @@ class Post extends Component {
     });
   }
 
-  findPost() {
-    return this.props.posts.filter(
-      p => p.id === this.props.match.params.postid
-    )[0];
-  }
-
   addComment(evt) {
     evt.preventDefault();
     //call function here to send the whole post details
-    let post = this.findPost();
+    let post = this.props.post;
     post.comments = [this.state.comment, ...post.comments];
 
     this.props.updateBlogPost(post);
@@ -51,7 +46,7 @@ class Post extends Component {
   }
 
   deleteComment(idx) {
-    let post = this.findPost();
+    let post = this.props.post;
     post.comments = [
       ...post.comments.slice(0, idx),
       ...post.comments.slice(idx + 1, post.comments.length)
@@ -61,7 +56,8 @@ class Post extends Component {
   }
 
   render() {
-    let post = this.findPost();
+    let post = this.props.post;
+    console.log(post);
 
     let showPost = (
       <div className="Post">
@@ -92,15 +88,19 @@ class Post extends Component {
       </div>
     );
 
-    return this.state.edit ? (
-      <Form
-        post={post}
-        history={this.props.history}
-        updateBlogPost={this.props.updateBlogPost}
-      />
-    ) : (
-      showPost
-    );
+    //if its in edit mode, show the form. otherwise show the post
+    if (!this.state.edit) {
+      return showPost;
+    } else {
+      return (
+        <Form
+          post={post}
+          history={this.props.history}
+          updateBlogPost={this.props.updateBlogPost}
+          handleEdit={this.handleEdit}
+        />
+      );
+    }
   }
 }
 
