@@ -19,11 +19,7 @@ class Routes extends Component {
   render() {
     return (
       <Switch>
-        <Route
-          exact
-          path="/"
-          render={() => <Home posts={this.props.posts} />}
-        />
+        <Route exact path="/" render={() => <Home />} />
         <Route
           exact
           path="/new"
@@ -35,6 +31,7 @@ class Routes extends Component {
             />
           )}
         />
+        <Route exact path="/404" render={() => <ErrorPage />} />
         <Route
           path="/:postid"
           render={rprops => (
@@ -46,7 +43,6 @@ class Routes extends Component {
             />
           )}
         />
-        {/* <Redirect to="." render={() => <ErrorPage />} /> */}
       </Switch>
     );
   }

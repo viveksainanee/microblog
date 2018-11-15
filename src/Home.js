@@ -1,11 +1,20 @@
 import React, { Component } from 'react';
 import BlogCard from './BlogCard';
+import { connect } from 'react-redux';
 
 class Home extends Component {
   render() {
-    let posts = this.props.posts.map(post => (
-      <BlogCard {...post} key={post.id} />
-    ));
+    let posts = [];
+    console.log('this.props: ', this.props);
+    for (let postKey in this.props.posts) {
+      posts.push(
+        <BlogCard
+          {...this.props.posts[postKey]}
+          key={this.props.posts[postKey].id}
+        />
+      );
+    }
+
     return (
       <div className="Home">
         <p>
@@ -18,4 +27,8 @@ class Home extends Component {
   }
 }
 
-export default Home;
+function mapStateToProps(state) {
+  return { posts: state.posts };
+}
+
+export default connect(mapStateToProps)(Home);

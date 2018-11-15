@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import Form from './Form';
 import Comment from './Comment';
+import { Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { addPost, updatePost, deletePost } from './actions';
 
 class Post extends Component {
   constructor(props) {
@@ -24,7 +27,8 @@ class Post extends Component {
 
   handleDelete(id) {
     // call function to delete in the master list in microblog with the id
-    this.props.deleteBlogPost(id);
+    // this.props.deleteBlogPost(id);
+    this.props.deletePost(id);
     this.props.history.replace('/');
   }
 
@@ -37,27 +41,27 @@ class Post extends Component {
   addComment(evt) {
     evt.preventDefault();
     //call function here to send the whole post details
-    let post = this.props.post;
+    let post = this.props.posts[this.props.match.params.postid];
     post.comments = [this.state.comment, ...post.comments];
 
-    this.props.updateBlogPost(post);
+    this.props.updatePost(post);
 
     this.setState({ comment: '' });
   }
 
   deleteComment(idx) {
-    let post = this.props.post;
+    let post = this.props.posts[this.props.match.params.postid];
     post.comments = [
       ...post.comments.slice(0, idx),
       ...post.comments.slice(idx + 1, post.comments.length)
     ];
 
-    this.props.updateBlogPost(post);
+    this.props.updatePost(post);
   }
 
   render() {
-    let post = this.props.post;
-    console.log(post);
+    let post = this.props.posts[this.props.match.params.postid];
+    if (!post) return <Redirect to="/404" />;
 
     let showPost = (
       <div className="Post">
@@ -104,4 +108,11 @@ class Post extends Component {
   }
 }
 
-export default Post;
+function mapStateToProps(state) {
+  return { posts: state.posts };
+}
+
+export default connect(
+  mapStateToProps,
+  { addPost, updatePost, deletePost }
+)(Post);

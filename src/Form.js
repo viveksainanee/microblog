@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { NavLink } from 'react-router-dom';
 import uuid from 'uuid/v4';
+import { connect } from 'react-redux';
+import { addPost, updatePost } from './actions';
 
 class Form extends Component {
   constructor(props) {
@@ -37,9 +38,9 @@ class Form extends Component {
   async handleSubmit(evt) {
     evt.preventDefault();
     if (this.props.post) {
-      this.props.updateBlogPost(this.state);
+      this.props.updatePost(this.state);
     } else {
-      this.props.addBlogPost(this.state);
+      this.props.addPost(this.state);
     }
     this.props.history.push('/');
   }
@@ -75,4 +76,10 @@ class Form extends Component {
   }
 }
 
-export default Form;
+export default connect(
+  null,
+  {
+    addPost,
+    updatePost
+  }
+)(Form);
