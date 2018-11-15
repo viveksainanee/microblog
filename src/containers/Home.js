@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import BlogCard from './BlogCard';
+import BlogCard from '../components/BlogCard';
 import { connect } from 'react-redux';
 
 class Home extends Component {
   render() {
     let posts = [];
-    console.log('this.props: ', this.props);
+    //for every post in the post object, create a blogcard
     for (let postKey in this.props.posts) {
       posts.push(
         <BlogCard

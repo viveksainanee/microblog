@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import Form from './Form';
-import Comment from './Comment';
+import Comment from '../components/Comment';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { addPost, updatePost, deletePost } from './actions';
+import { addPost, updatePost, deletePost } from '../actions';
 
 class Post extends Component {
   constructor(props) {
@@ -26,8 +26,7 @@ class Post extends Component {
   }
 
   handleDelete(id) {
-    // call function to delete in the master list in microblog with the id
-    // this.props.deleteBlogPost(id);
+    // dispatches an action two remove post
     this.props.deletePost(id);
     this.props.history.replace('/');
   }
@@ -40,17 +39,17 @@ class Post extends Component {
 
   addComment(evt) {
     evt.preventDefault();
-    //call function here to send the whole post details
-    let post = this.props.posts[this.props.match.params.postid];
+    //send all post details to redux store
+    let post = { ...this.props.posts[this.props.match.params.postid] };
     post.comments = [this.state.comment, ...post.comments];
-
     this.props.updatePost(post);
 
     this.setState({ comment: '' });
   }
 
   deleteComment(idx) {
-    let post = this.props.posts[this.props.match.params.postid];
+    //removes the comment from the array of comments
+    let post = { ...this.props.posts[this.props.match.params.postid] };
     post.comments = [
       ...post.comments.slice(0, idx),
       ...post.comments.slice(idx + 1, post.comments.length)
@@ -60,6 +59,7 @@ class Post extends Component {
   }
 
   render() {
+    // If URL paramter doesn't match a postID, redirect to 404 page
     let post = this.props.posts[this.props.match.params.postid];
     if (!post) return <Redirect to="/404" />;
 
@@ -70,6 +70,8 @@ class Post extends Component {
         <p>{post.body}</p>
         <button onClick={this.handleEdit}>Edit</button>
         <button onClick={() => this.handleDelete(post.id)}>Delete</button>
+
+        {/* This is the comments section */}
         <div className="Post-commments">
           <h3> Comments</h3>
 
@@ -81,9 +83,11 @@ class Post extends Component {
             />
             <button> Submit </button>
           </form>
+
+          {/* This shows the list of comments */}
           {post.comments.map((comment, idx) => (
             <Comment
-              key={post.id}
+              key={idx}
               comment={comment}
               deleteComment={() => this.deleteComment(idx)}
             />
@@ -100,7 +104,6 @@ class Post extends Component {
         <Form
           post={post}
           history={this.props.history}
-          updateBlogPost={this.props.updateBlogPost}
           handleEdit={this.handleEdit}
         />
       );
