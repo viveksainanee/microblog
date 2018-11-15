@@ -3,8 +3,19 @@ import { Switch, Route } from 'react-router-dom';
 import Form from './Form';
 import Home from './Home';
 import Post from './Post';
+import ErrorPage from './ErrorPage';
 
 class Routes extends Component {
+  constructor(props) {
+    super(props);
+    this.findPost = this.findPost.bind(this);
+  }
+
+  // UTILITY FUNCTIONS /////////////////////////
+  findPost(rprops) {
+    return this.props.posts.filter(p => p.id === rprops.match.params.postid)[0];
+  }
+
   render() {
     return (
       <Switch>
@@ -17,13 +28,25 @@ class Routes extends Component {
           exact
           path="/new"
           render={props => (
-            <Form {...props} newBlogPost={this.props.newBlogPost} />
+            <Form
+              {...props}
+              addBlogPost={this.props.addBlogPost}
+              updateBlogPost={this.props.updateBlogPost}
+            />
           )}
         />
         <Route
           path="/:postid"
-          render={props => <Post {...props} posts={this.props.posts} />}
+          render={rprops => (
+            <Post
+              {...rprops}
+              post={this.findPost(rprops)}
+              updateBlogPost={this.props.updateBlogPost}
+              deleteBlogPost={this.props.deleteBlogPost}
+            />
+          )}
         />
+        {/* <Redirect to="." render={() => <ErrorPage />} /> */}
       </Switch>
     );
   }

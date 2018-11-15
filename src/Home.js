@@ -3,7 +3,9 @@ import BlogCard from './BlogCard';
 
 class Home extends Component {
   render() {
-    let posts = this.props.posts.map(post => <BlogCard {...post} />);
+    let posts = this.props.posts.map(post => (
+      <BlogCard {...post} key={post.id} />
+    ));
     return (
       <div className="Home">
         <p>
