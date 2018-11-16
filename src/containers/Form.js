@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-import uuid from 'uuid/v4';
-import { connect } from 'react-redux';
-import { addPost, updatePost } from '../actions';
 
 class Form extends Component {
   constructor(props) {
@@ -20,14 +17,12 @@ class Form extends Component {
         title: '',
         desc: '',
         body: '',
-        comments: [],
-        id: uuid()
+        comments: []
+        // id: uuid()
       };
     }
     this.handleChange = this.handleChange.bind(this);
-    this.handleCancel = this.handleCancel.bind(this);
-
-    this.handleSave = this.handleSave.bind(this);
+    this.savePostDetails = this.savePostDetails.bind(this);
   }
 
   handleChange(evt) {
@@ -36,29 +31,8 @@ class Form extends Component {
     });
   }
 
-  handleCancel() {
-    if (this.props.handleEdit) {
-      //if editing, return them back to the view post page
-      this.props.handleEdit();
-    } else {
-      //if brand new post, return to home
-      this.props.history.push('/');
-    }
-  }
-
-  async handleSave(evt) {
-    evt.preventDefault();
-    // If its existing, update the post
-    if (this.props.post) {
-      this.props.updatePost(this.state);
-      //flip boolean value to return to the view post page
-      this.props.handleEdit();
-    } else {
-      // If its a new post, create a post
-      this.props.addPost(this.state);
-      //redirect user to the homepage
-      this.props.history.push('/');
-    }
+  savePostDetails() {
+    this.props.handleSave(this.state);
   }
 
   render() {
@@ -84,17 +58,11 @@ class Form extends Component {
           value={this.state.body}
           onChange={this.handleChange}
         />
-        <button onClick={this.handleSave}>Save</button>
-        <button onClick={this.handleCancel}>Cancel</button>
+        <button onClick={this.savePostDetails}>Save</button>
+        <button onClick={this.props.handleCancel}>Cancel</button>
       </form>
     );
   }
 }
 
-export default connect(
-  null,
-  {
-    addPost,
-    updatePost
-  }
-)(Form);
+export default Form;

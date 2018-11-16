@@ -17,6 +17,8 @@ class Post extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.addComment = this.addComment.bind(this);
     this.deleteComment = this.deleteComment.bind(this);
+    this.handleSave = this.handleSave.bind(this);
+    this.handleCancel = this.handleCancel.bind(this);
   }
 
   // HANDLER FUNCTIONS /////////////////////////
@@ -43,7 +45,6 @@ class Post extends Component {
     let post = { ...this.props.posts[this.props.match.params.postid] };
     post.comments = [this.state.comment, ...post.comments];
     this.props.updatePost(post);
-
     this.setState({ comment: '' });
   }
 
@@ -56,6 +57,17 @@ class Post extends Component {
     ];
 
     this.props.updatePost(post);
+  }
+
+  handleCancel() {
+    //if editing, return them back to the view post page
+    this.handleEdit();
+  }
+
+  handleSave(post) {
+    this.props.updatePost({ ...post });
+    //flip boolean value to return to the view post page
+    this.handleEdit();
   }
 
   render() {
@@ -88,8 +100,9 @@ class Post extends Component {
           {post.comments.map((comment, idx) => (
             <Comment
               key={idx}
+              id={idx}
               comment={comment}
-              deleteComment={() => this.deleteComment(idx)}
+              deleteComment={this.deleteComment}
             />
           ))}
         </div>
@@ -105,6 +118,8 @@ class Post extends Component {
           post={post}
           history={this.props.history}
           handleEdit={this.handleEdit}
+          handleSave={this.handleSave}
+          handleCancel={this.handleCancel}
         />
       );
     }

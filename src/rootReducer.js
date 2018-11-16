@@ -11,8 +11,11 @@ function rootReducer(state = INITIAL_STATE, action) {
       };
 
     case UPDATE_POST:
+      //spread the existing posts
       newPosts = { ...state.posts };
+      //replace the existing post (by ID) with the new payload
       newPosts[action.payload.id] = action.payload;
+
       return { posts: newPosts };
 
     case DELETE_POST:
