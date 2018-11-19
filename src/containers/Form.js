@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-import uuid from 'uuid/v4';
-import { connect } from 'react-redux';
-import { addPost, updatePost } from './actions';
 
 class Form extends Component {
   constructor(props) {
@@ -20,13 +17,12 @@ class Form extends Component {
         title: '',
         desc: '',
         body: '',
-        comments: [],
-        id: uuid()
+        comments: []
+        // id: uuid()
       };
     }
-
     this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.savePostDetails = this.savePostDetails.bind(this);
   }
 
   handleChange(evt) {
@@ -35,19 +31,13 @@ class Form extends Component {
     });
   }
 
-  async handleSubmit(evt) {
-    evt.preventDefault();
-    if (this.props.post) {
-      this.props.updatePost(this.state);
-    } else {
-      this.props.addPost(this.state);
-    }
-    this.props.history.push('/');
+  savePostDetails() {
+    this.props.handleSave(this.state);
   }
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
+      <form>
         <label htmlFor="title">Title</label>
         <input
           type="text"
@@ -68,18 +58,11 @@ class Form extends Component {
           value={this.state.body}
           onChange={this.handleChange}
         />
-        <button>Save</button>
-
-        <button onClick={this.props.handleEdit}>Cancel</button>
+        <button onClick={this.savePostDetails}>Save</button>
+        <button onClick={this.props.handleCancel}>Cancel</button>
       </form>
     );
   }
 }
 
-export default connect(
-  null,
-  {
-    addPost,
-    updatePost
-  }
-)(Form);
+export default Form;

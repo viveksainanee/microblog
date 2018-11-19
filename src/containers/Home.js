@@ -1,19 +1,20 @@
 import React, { Component } from 'react';
-import BlogCard from './BlogCard';
+import BlogCard from '../components/BlogCard';
 import { connect } from 'react-redux';
 
 class Home extends Component {
   render() {
     let posts = [];
-    console.log('this.props: ', this.props);
-    for (let postKey in this.props.posts) {
-      posts.push(
+    //for every post in the post object, create a blogcard
+
+    Object.keys(this.props.posts).map(postKey => {
+      return posts.push(
         <BlogCard
           {...this.props.posts[postKey]}
           key={this.props.posts[postKey].id}
         />
       );
-    }
+    });
 
     return (
       <div className="Home">
