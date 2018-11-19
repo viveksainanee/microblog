@@ -3,7 +3,14 @@ import Form from './Form';
 import Comment from '../components/Comment';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { addPost, updatePost, deletePost } from '../actions';
+import {
+  addPost,
+  updatePost,
+  deletePost,
+  addComment,
+  deleteComment
+} from '../actions';
+import uuid from 'uuid/v4';
 
 class Post extends Component {
   constructor(props) {
@@ -15,8 +22,8 @@ class Post extends Component {
     this.handleEdit = this.handleEdit.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.addComment = this.addComment.bind(this);
-    this.deleteComment = this.deleteComment.bind(this);
+    this.handleAddComment = this.handleAddComment.bind(this);
+    this.handleDeleteComment = this.handleDeleteComment.bind(this);
     this.handleSave = this.handleSave.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
   }
@@ -39,24 +46,21 @@ class Post extends Component {
     });
   }
 
-  addComment(evt) {
+  handleAddComment(evt) {
     evt.preventDefault();
     //send all post details to redux store
-    let post = { ...this.props.posts[this.props.match.params.postid] };
-    post.comments = [this.state.comment, ...post.comments];
-    this.props.updatePost(post);
+    let comment = {
+      text: this.state.comment,
+      id: uuid(),
+      postID: this.props.match.params.postid
+    };
+    this.props.addComment(comment);
     this.setState({ comment: '' });
   }
 
-  deleteComment(idx) {
+  handleDeleteComment(id) {
     //removes the comment from the array of comments
-    let post = { ...this.props.posts[this.props.match.params.postid] };
-    post.comments = [
-      ...post.comments.slice(0, idx),
-      ...post.comments.slice(idx + 1, post.comments.length)
-    ];
-
-    this.props.updatePost(post);
+    this.props.deleteComment({ id, postID: this.props.match.params.postid });
   }
 
   handleCancel() {
@@ -87,7 +91,7 @@ class Post extends Component {
         <div className="Post-commments">
           <h3> Comments</h3>
 
-          <form onSubmit={this.addComment}>
+          <form onSubmit={this.handleAddComment}>
             <input
               onChange={this.handleChange}
               name="comment"
@@ -97,12 +101,12 @@ class Post extends Component {
           </form>
 
           {/* This shows the list of comments */}
-          {post.comments.map((comment, idx) => (
+          {post.comments.map(comment => (
             <Comment
-              key={idx}
-              id={idx}
-              comment={comment}
-              deleteComment={this.deleteComment}
+              key={comment.id}
+              id={comment.id}
+              comment={comment.text}
+              deleteComment={this.handleDeleteComment}
             />
           ))}
         </div>
@@ -132,5 +136,5 @@ function mapStateToProps(state) {
 
 export default connect(
   mapStateToProps,
-  { addPost, updatePost, deletePost }
+  { addPost, updatePost, deletePost, addComment, deleteComment }
 )(Post);
