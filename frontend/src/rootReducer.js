@@ -3,7 +3,8 @@ import {
   UPDATE_POST,
   DELETE_POST,
   ADD_COMMENT,
-  DELETE_COMMENT
+  DELETE_COMMENT,
+  GOT_POSTS
 } from './actionTypes.js';
 
 const INITIAL_STATE = { posts: {} };
@@ -11,6 +12,13 @@ const INITIAL_STATE = { posts: {} };
 function rootReducer(state = INITIAL_STATE, action) {
   let newPosts;
   switch (action.type) {
+    case GOT_POSTS:
+      newPosts = {};
+      for (let i = 0; i < action.payload.length; i++) {
+        newPosts[action.payload[i].id] = action.payload[i];
+      }
+      return { posts: newPosts };
+
     case ADD_POST:
       return {
         posts: { ...state.posts, [action.payload.id]: action.payload }

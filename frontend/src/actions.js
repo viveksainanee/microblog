@@ -3,8 +3,27 @@ import {
   UPDATE_POST,
   DELETE_POST,
   ADD_COMMENT,
-  DELETE_COMMENT
+  DELETE_COMMENT,
+  GOT_POSTS
 } from './actionTypes.js';
+import axios from 'axios';
+
+const BASEURL = 'http://localhost:5000';
+
+export function getPostsFromAPI() {
+  return async function(dispatch) {
+    let posts = await axios.get(`${BASEURL}/api/posts`);
+    console.log('Hey Vivek, this is what the posts looks like: ', posts.data);
+    dispatch(gotPosts(posts.data));
+  };
+}
+
+function gotPosts(payload) {
+  return {
+    type: GOT_POSTS,
+    payload
+  };
+}
 
 export function addPost(payload) {
   return {
