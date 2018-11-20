@@ -1,20 +1,32 @@
 import React, { Component } from 'react';
 import BlogCard from '../components/BlogCard';
 import { connect } from 'react-redux';
-import { getPostsFromAPI } from '../actions';
+import { getTitlesFromAPI } from '../actions';
 
 class Home extends Component {
-  componentDidMount() {
-    this.props.getPostsFromAPI();
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: true
+    };
   }
+
+  async componentDidMount() {
+    await this.props.getTitlesFromAPI();
+    this.setState({ loading: false });
+  }
+
   render() {
-    let posts = [];
+    if (this.state.loading) {
+      return 'loading....';
+    }
+    let titles = [];
     //for every post in the post object, create a blogcard
-    Object.keys(this.props.posts).map(postKey => {
-      return posts.push(
+    Object.keys(this.props.titles).map(postKey => {
+      return titles.push(
         <BlogCard
-          {...this.props.posts[postKey]}
-          key={this.props.posts[postKey].id}
+          {...this.props.titles[postKey]}
+          key={this.props.titles[postKey].id}
         />
       );
     });
@@ -25,17 +37,17 @@ class Home extends Component {
           Welcome to Microblog, our innovative site for communicating on the
           information superhighway.
         </p>
-        <div>{posts}</div>
+        <div>{titles}</div>
       </div>
     );
   }
 }
 
 function mapStateToProps(state) {
-  return { posts: state.posts };
+  return { titles: state.titles };
 }
 
 export default connect(
   mapStateToProps,
-  { getPostsFromAPI }
+  { getTitlesFromAPI }
 )(Home);

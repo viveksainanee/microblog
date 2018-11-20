@@ -8,7 +8,7 @@ class BlogCard extends Component {
         <NavLink to={`/${this.props.id}`}>
           <h3>{this.props.title}</h3>
         </NavLink>
-        <p>{this.props.body}</p>
+        <p>{this.props.description}</p>
       </div>
     );
   }

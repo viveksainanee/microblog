@@ -8,7 +8,8 @@ import {
   updatePost,
   deletePost,
   addComment,
-  deleteComment
+  deleteComment,
+  getPostFromAPI
 } from '../actions';
 import uuid from 'uuid/v4';
 
@@ -16,6 +17,7 @@ class Post extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading: true,
       edit: false,
       comment: ''
     };
@@ -74,18 +76,31 @@ class Post extends Component {
     this.handleEdit();
   }
 
+  async componentDidMount() {
+    await this.props.getPostFromAPI(this.props.match.params.postid);
+    this.setState({
+      loading: false
+    });
+  }
+
   render() {
     // If URL paramter doesn't match a postID, redirect to 404 page
-    let post = this.props.posts[this.props.match.params.postid];
-    if (!post) return <Redirect to="/404" />;
+    // let post = this.props.post[this.props.match.params.postid];
+    // if (!post) return <Redirect to="/404" />;
+
+    if (this.state.loading) {
+      return 'Loading...';
+    }
 
     let showPost = (
       <div className="Post">
-        <h1>{post.title}</h1>
-        <h2>{post.desc}</h2>
-        <p>{post.body}</p>
+        <h1>{this.props.post.title}</h1>
+        <h2>{this.props.post.desc}</h2>
+        <p>{this.props.post.body}</p>
         <button onClick={this.handleEdit}>Edit</button>
-        <button onClick={() => this.handleDelete(post.id)}>Delete</button>
+        <button onClick={() => this.handleDelete(this.props.post.id)}>
+          Delete
+        </button>
 
         {/* This is the comments section */}
         <div className="Post-commments">
@@ -101,7 +116,7 @@ class Post extends Component {
           </form>
 
           {/* This shows the list of comments */}
-          {post.comments.map(comment => (
+          {this.props.post.comments.map(comment => (
             <Comment
               key={comment.id}
               id={comment.id}
@@ -119,7 +134,7 @@ class Post extends Component {
     } else {
       return (
         <Form
-          post={post}
+          post={this.props.post}
           history={this.props.history}
           handleEdit={this.handleEdit}
           handleSave={this.handleSave}
@@ -131,10 +146,17 @@ class Post extends Component {
 }
 
 function mapStateToProps(state) {
-  return { posts: state.posts };
+  return { post: state.post };
 }
 
 export default connect(
   mapStateToProps,
-  { addPost, updatePost, deletePost, addComment, deleteComment }
+  {
+    addPost,
+    updatePost,
+    deletePost,
+    addComment,
+    deleteComment,
+    getPostFromAPI
+  }
 )(Post);

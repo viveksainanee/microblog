@@ -4,23 +4,37 @@ import {
   DELETE_POST,
   ADD_COMMENT,
   DELETE_COMMENT,
-  GOT_POSTS
+  GOT_TITLES,
+  GOT_POST
 } from './actionTypes.js';
 import axios from 'axios';
 
 const BASEURL = 'http://localhost:5000';
 
-export function getPostsFromAPI() {
+export function getTitlesFromAPI() {
   return async function(dispatch) {
-    let posts = await axios.get(`${BASEURL}/api/posts`);
-    console.log('Hey Vivek, this is what the posts looks like: ', posts.data);
-    dispatch(gotPosts(posts.data));
+    let titles = await axios.get(`${BASEURL}/api/posts`);
+    dispatch(gotTitles(titles.data));
   };
 }
 
-function gotPosts(payload) {
+function gotTitles(payload) {
   return {
-    type: GOT_POSTS,
+    type: GOT_TITLES,
+    payload
+  };
+}
+
+export function getPostFromAPI(id) {
+  return async function(dispatch) {
+    let post = await axios.get(`${BASEURL}/api/posts/${id}`);
+    dispatch(gotPost(post.data));
+  };
+}
+
+function gotPost(payload) {
+  return {
+    type: GOT_POST,
     payload
   };
 }
